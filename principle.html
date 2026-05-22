@@ -1,0 +1,276 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251" />
+    
+    <script src="jquery.js"></script>
+    
+    <script src="https://webasr.yandex.net/jsapi/v1/webspeechkit.js" type="text/javascript"></script>
+    
+    <script src="active_dialog.js"></script>
+    
+    <link href="styles.css" type="text/css" rel="stylesheet"/>
+<title>Принцип работы</title>
+
+<style>
+body{
+    background:#f4f4f4;
+    font-family:Arial,sans-serif;
+    margin:0;
+    padding:0;
+}
+
+.navbar{
+    position:fixed;
+    top:0;
+    width:100%;
+    background:#333;
+    color:#fff;
+    padding:10px 20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-sizing:border-box;
+    z-index:1000;
+}
+
+.page-title{
+    font-size:1.5em;
+    font-weight:bold;
+}
+
+.nav-links{
+    display:flex;
+    gap:15px;
+}
+
+.navbar a{
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+.navbar a:hover{
+    text-decoration:underline;
+}
+
+.content{
+    width:90%;
+    margin:110px auto 20px auto;
+    background:white;
+    padding:40px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+
+    display:flex;
+    flex-direction:column;
+    gap:30px;
+}
+
+h2{
+    border-bottom:2px solid #333;
+    padding-bottom:10px;
+    text-align:center;
+    font-size: 1.8em;
+}
+
+h3{
+    margin-top:25px;
+    color:#444;
+    font-size: 1.8em;
+}
+
+p{
+    font-size:1.8em;
+    line-height:1.6;
+    text-align:justify;
+}
+
+ul{
+    font-size:1.8em;
+    line-height:1.6;
+    margin-left:20px;
+}
+
+/* IMAGE STYLES */
+.image-wrapper{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+}
+
+.image-large{
+    transform:scale(1.7);
+    transform-origin:center;
+}
+
+.image-normal{
+    max-width:100%;
+    height:auto;
+}
+</style>
+</head>
+
+<body onLoad="dialog_window()">
+
+<div class="navbar">
+<div class="page-title">Дровокол «Горыныч»</div>
+<div class="nav-links">
+<a href="index.html">Титул</a>
+<a href="theory.html">Теория</a>
+<a href="description.html">Описание</a>
+<a href="principle.html">Принцип работы</a>
+<a href="simulator.html">Симулятор</a>
+</div>
+</div>
+
+<div class="content">
+
+<h2>Принцип работы дровокола «Горыныч»</h2>
+
+<p>Дровокол «Горыныч» работает на основе гидравлического принципа передачи усилия. В отличие от ручной рубки колуном, где сила создаётся человеком, в данном устройстве основную работу выполняет гидравлическая система. Это позволяет создавать большое давление и раскалывать даже плотную и крупную древесину с минимальными физическими усилиями со стороны оператора.</p>
+
+<h3>Основной механизм работы</h3>
+
+<p>В основе конструкции лежит взаимодействие двигателя, гидравлического насоса и гидроцилиндра. После запуска двигателя начинает работать насос, который нагнетает гидравлическое масло в систему. Под давлением масло поступает в гидроцилиндр, заставляя его шток двигаться вперёд.</p>
+
+<p>Движение штока передаётся на полено: либо полено проталкивается к неподвижному колуну, либо сам колун движется навстречу заготовке. В результате создаётся мощное давление, под действием которого древесина раскалывается по естественным волокнам.</p>
+
+<div class="image-wrapper">
+<img src="drovokol.jpg" usemap="#image-map" class="image-large">
+</div>
+
+<map name="image-map">
+<area href="?sound=bak" title="Топливный бак" coords="296,372,306,216,319,209,440,239,431,399,407,423" shape="poly">
+<area href="?sound=cylinder" title="Гидроцилиндр" coords="239,152,272,141,283,162,473,193,459,225,280,189,243,196" shape="poly">
+<area href="?sound=cooling" title="Охлаждение и генератор" coords="400,230,405,174,446,156,466,162,478,190,452,240" shape="poly">
+<area href="?sound=switch" title="Переключатель" coords="437,291,431,345,472,341,473,299" shape="poly">
+<area href="?sound=table" title="Рабочий стол" coords="60,184,181,157,237,168,241,196,206,221" shape="poly">
+<area href="?sound=wheels" title="Колесики" coords="129,338,112,308,117,290,157,293,147,221,145,205,304,246,295,373,360,402,341,449,315,455,293,431,289,397,298,387,264,351,228,230,208,235,205,276,205,310,178,300,152,315,134,333" shape="poly">
+<area href="?sound=knife" title="Колун-нож" coords="148,125,155,129,181,173,139,183,128,173,137,136" shape="poly">
+</map>
+<div id="detail-panel" class="detail-panel hidden">
+    <div class="detail-image">
+        <img id="detail-img" src="placeholder.png" alt="Деталь">
+    </div>
+    <div class="detail-text">
+        <h3 id="detail-title">Выберите элемент</h3>
+        <p id="detail-description">
+            Нажмите на одну из частей дровокола, чтобы увидеть описание.
+        </p>
+    </div>
+</div>
+<script>
+window.addEventListener("DOMContentLoaded", () => {
+
+const audio = new Audio();
+
+const detailData = {
+    bak: {
+        title: "Топливный бак",
+        text: "Топливный бак предназначен для хранения запаса бензина, необходимого для работы двигателя дровокола. Он изготовлен из прочного металла, устойчивого к вибрациям и механическим нагрузкам. Герметичная крышка предотвращает утечку топлива и защищает его от загрязнений.",
+        image: "benzobak.png"
+    },
+    cylinder: {
+        title: "Гидроцилиндр",
+        text: "Гидроцилиндр является главным силовым элементом дровокола. Под давлением гидравлической жидкости его шток выдвигается и создаёт мощное усилие, раскалывающее полено.",
+        image: "gidro.png"
+    },
+    cooling: {
+        title: "Охлаждение и генератор",
+        text: "Система охлаждения поддерживает оптимальную температуру двигателя и гидравлики. Генератор обеспечивает стабильную работу электрических компонентов конструкции.",
+        image: "generator.png"
+    },
+    switch: {
+        title: "Переключатель",
+        text: "Переключатель служит для управления работой дровокола. С его помощью осуществляется запуск и остановка двигателя.",
+        image: "pere.png"
+    },
+    table: {
+        title: "Рабочий стол",
+        text: "Рабочий стол — прочная металлическая площадка для укладки полена перед раскалыванием. Он обеспечивает устойчивость заготовки.",
+        image: "stol.png"
+    },
+    wheels: {
+        title: "Колёсики",
+        text: "Колёсики обеспечивают мобильность дровокола, позволяя легко перемещать его по участку.",
+        image: "kolesiki.png"
+    },
+    knife: {
+        title: "Колун-нож",
+        text: "Колун-нож — закалённый стальной клин, который непосредственно раскалывает древесину под действием давления.",
+        image: "knife.png"
+    }
+};
+
+const titleEl = document.getElementById("detail-title");
+const textEl = document.getElementById("detail-description");
+const imgEl = document.getElementById("detail-img");
+const panel = document.getElementById("detail-panel");
+
+document.querySelectorAll("area").forEach(area => {
+    area.addEventListener("click", function(e) {
+        e.preventDefault();
+
+        const sound = this.getAttribute("href").replace("?sound=", "");
+
+        if(detailData[sound]){
+            titleEl.textContent = detailData[sound].title;
+            textEl.textContent = detailData[sound].text;
+            imgEl.src = detailData[sound].image;
+
+            panel.classList.remove("hidden");
+        }
+
+        audio.src = "sounds/" + sound + ".mp3";
+        audio.currentTime = 0;
+        audio.play().catch(()=>{});
+    });
+});
+
+});
+</script>
+<h3>Роль гидравлической системы</h3>
+
+<p>Гидравлическая система позволяет значительно увеличить прикладываемую силу. Даже компактный дровокол способен развивать усилие в несколько тонн. Давление создаётся за счёт замкнутого контура, в котором циркулирует рабочая жидкость.</p>
+
+<ul>
+<li>Насос, создающий давление.</li>
+<li>Распределительный клапан, управляющий направлением движения.</li>
+<li>Гидроцилиндр, преобразующий давление в поступательное движение.</li>
+<li>Бак с рабочей жидкостью.</li>
+</ul>
+
+<p>После завершения хода штока оператор переводит рычаг управления, и цилиндр возвращается в исходное положение, готовый к следующему циклу работы.</p>
+
+<h3>Рабочий цикл</h3>
+
+<ul>
+<li>Укладка полена на рабочий стол.</li>
+<li>Фиксация заготовки в устойчивом положении.</li>
+<li>Запуск движения штока при помощи переключателя или рычага управления.</li>
+<li>Раскалывание древесины под действием давления.</li>
+<li>Возврат штока в исходное положение.</li>
+</ul>
+
+<p>Благодаря автоматическому возврату и стабильной работе гидравлики процесс повторяется быстро и равномерно.</p>
+
+<div class="image-wrapper">
+<img src="drovokol2.jpg" class="image-normal">
+</div>
+
+<h3>Безопасность и эффективность</h3>
+
+<p>Использование гидравлического принципа делает работу более безопасной по сравнению с ручной рубкой. Оператор не выполняет резких ударных движений, что снижает риск травм. Конструкция предусматривает устойчивую раму и надёжную фиксацию полена во время раскола.</p>
+
+<p>Кроме того, равномерное давление позволяет аккуратно разделять древесину без сильных осколков и хаотичных разлётов частей.</p>
+
+<h3>Итог</h3>
+
+<p>Таким образом, принцип работы дровокола «Горыныч» основан на преобразовании энергии двигателя в гидравлическое давление, которое создаёт мощное и контролируемое усилие раскалывания. Это обеспечивает высокую производительность, надёжность и удобство эксплуатации при заготовке дров.</p>
+
+</div>
+
+</body>
+</html>
