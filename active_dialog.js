@@ -134,8 +134,8 @@ var knowledge = [
     ['Разработчиком симулятора', 'является', 'Maksym Kovalchuk'],
     ['Симулятор', 'разразработан', 'Maksym Kovalchuk'],
     ['Проект', 'создан', 'Maksym Kovalchuk'],
-    ['Дровокол', 'выглядит', getAssetPath('./drovokol.jpg')],
-    ['Дровокол', 'работает', getAssetPath('./project.mp4')]
+    ['Дровокол', 'выглядит', getAssetPath('drovokol.jpg')],
+    ['Дровокол', 'работает', getAssetPath('project.mp4')]
 ];
 
 
