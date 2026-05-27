@@ -14,6 +14,7 @@ var endings = [
     ["ит", "ит"],
     ["ят", "ят"]
 ];
+
 function getAssetPath(assetPath) {
   var cleanPath = String(assetPath).replace(/^\/+/, '')
 
@@ -140,15 +141,29 @@ var knowledge = [
 
 
 function dialog_window() {
+    if (document.getElementById('dialog')) {
+        return;
+    }
+
     document.body.insertAdjacentHTML('beforeend', 
         "<div id='dialog' class='dialog'>"
         + "<div class='label' onclick='openDialog()'>Нажми, чтобы спросить!</div>"
         + "<div class='header'>История диалога с БЗ:</div>"
         + "<div class='history' id='history'></div>"
-        + "<div class='question'><input id='Qdialog' placeholder='Введите ваш вопрос...'/> <br>"
+        + "<div class='question'><input id='Qdialog' placeholder='Введите ваш вопрос...' autocomplete='off' /> <br>"
         + "<button onclick='ask(\"Qdialog\")'>Спросить</button></div>"
         + "</div>"
     );
+
+    var input = document.getElementById('Qdialog');
+    if (input) {
+        input.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                ask('Qdialog');
+            }
+        });
+    }
 
     if (window.ya && window.ya.speechkit) {
         if (!window.ya.speechkit.settings) {
@@ -161,26 +176,15 @@ function dialog_window() {
             var textline = new ya.speechkit.Textline('Qdialog', { 
                 onInputFinished: function(text) {
                     document.getElementById('Qdialog').value = text; 
+                    input.focus();
                 }
             });
         } catch(e) {
-            console.warn("Не удалось инициализировать Textline (возможно, микрофон заблокирован или скрипт SpeechKit устарел):", e);
+            console.warn("Не удалось инициализировать Textline:", e);
         }
     }
 }
-function getEnding(word) {
-    if (typeof endings === 'undefined' || !endings) return -1;
-    for (var j = 0; j < endings.length; j++) {
-        if (word.substring(word.length - endings[j][0].length) === endings[j][0]) {
-            return j;
-        }
-    }
-    return -1;
-}
-function big(str) { 
-    if (!str) return '';
-    return str.substring(0, 1).toUpperCase() + str.substring(1); 
-}
+
 function openDialog() {
     console.log("Состояние окна до клика (dialogOn):", dialogOn);
     
@@ -198,29 +202,55 @@ function openDialog() {
 }
 
 function ask(questionInput) {
-    var question = document.getElementById(questionInput).value;
-    if (!question.trim()) return; 
+    var input = document.getElementById(questionInput);
+    if (!input) return;
+    var question = input.value.trim();
+    if (!question) return; 
+
+    var history = document.getElementById("history");
+    if (!history) return;
 
     var newDiv = document.createElement("div");
     newDiv.className = 'question';
-    newDiv.innerHTML = question;
-    document.getElementById("history").appendChild(newDiv);
+    newDiv.textContent = question; 
+    history.appendChild(newDiv);
 
     var answerDiv = document.createElement("div");
     answerDiv.className = 'answer';
-    answerDiv.innerHTML = getAnswer(question); 
-    document.getElementById("history").appendChild(answerDiv);
+    answerDiv.innerHTML = getDialogAnswer(question); 
+    history.appendChild(answerDiv);
 
-    document.getElementById("history").scrollTop = document.getElementById("history").scrollHeight;
-    document.getElementById(questionInput).value = "";
+    history.scrollTop = history.scrollHeight;
+    input.value = "";
+    input.focus();
 }
 
-function clearQuestion(question) {
-    return question
-        .toLowerCase()
-        .replace(/[?!.;,]+/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
+function getDialogAnswer(question) {
+    if (typeof getAnswer !== 'function') {
+        return 'Функция getAnswer() не подключена.';
+    }
+    return getAnswer(question);
+}
+
+
+function getEnding(word) {
+    if (typeof endings === 'undefined' || !endings) return -1;
+    for (var j = 0; j < endings.length; j++) {
+        if (word.substring(word.length - endings[j][0].length) === endings[j][0]) {
+            return j;
+        }
+    }
+    return -1;
+}
+
+function small(str) {
+    if (!str) return '';
+    return str.substring(0, 1).toLowerCase() + str.substring(1);
+}
+
+function big(str) { 
+    if (!str) return '';
+    return str.substring(0, 1).toUpperCase() + str.substring(1); 
 }
 
 function getAnswerText(triad) {
@@ -239,111 +269,126 @@ function getAnswerText(triad) {
     return '<li>' + big(subject + ' ' + predicate + ' ' + (mediaHtml ? mediaHtml : object)) + '</li>';
 }
 
-function getMeaningfulWords(text) {
+function getKnowledgeBase() {
+    var base = [];
+    if (typeof knowledge !== 'undefined' && Array.isArray(knowledge)) {
+        base = base.concat(knowledge);
+    }
+    if (typeof knowledgePhoto !== 'undefined' && Array.isArray(knowledgePhoto)) {
+        base = base.concat(knowledgePhoto);
+    }
+    return base;
+}
+
+function clearQuestion(question) {
+    return question
+        .toLowerCase()
+        .replace(/[?!.;,]+/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+function getMeaningfulWords(value) {
     var stopWords = [
-        'кто', 'что', 'где', 'как', 'когда', 'куда', 'зачем', 'почему', 'из', 'чего', 
-        'чем', 'для', 'при', 'под', 'над', 'перед', 'после', 'через', 'в', 'во', 'на', 
-        'за', 'какой', 'какая', 'какие', 'какое', 'бы', 'ли', 'же', 'это'
+        'что', 'чем', 'где', 'как', 'когда', 'куда', 'кто', 'каким', 
+        'какая', 'какой', 'какие', 'для', 'при', 'под', 'над', 
+        'перед', 'после', 'через'
     ];
-    
-    return clearQuestion(text)
+
+    return clearQuestion(String(value).replace(/<[^>]+>/g, ' '))
         .split(' ')
-        .filter(function(word) {
+        .filter(function (word) {
             return word.length > 2 && stopWords.indexOf(word) === -1;
         });
 }
 
-function getAnswer(question) {
-    var answers = [];
-    var cleanQ = clearQuestion(question);
+function questionContainsSubject(question, subject) {
+    var subjectWords = getMeaningWords = getMeaningfulWords(subject);
 
-    if (!cleanQ) {
+    if (subjectWords.length === 0) {
+        return false;
+    }
+
+    return subjectWords.every(function (word) {
+        return question.indexOf(word) !== -1;
+    });
+}
+
+function questionContainsPredicate(question, predicate) {
+    var predicateWords = getMeaningfulWords(predicate);
+
+    return predicateWords.some(function (word) {
+        return question.indexOf(word) !== -1;
+    });
+}
+
+function getAnswer(question) {
+    var result = false;
+    var answers = [];
+    var knowledgeBase = getKnowledgeBase();
+
+    question = clearQuestion(question);
+
+    if (!question) {
         return 'Введите вопрос.';
     }
 
-    // Собираем общую базу (если есть массив с фото — склеиваем, если нет — берем только knowledge)
-    var base = [];
-    if (typeof knowledge !== 'undefined' && Array.isArray(knowledge)) base = base.concat(knowledge);
-    if (typeof knowledgePhoto !== 'undefined' && Array.isArray(knowledgePhoto)) base = base.concat(knowledgePhoto);
-
-    var words = cleanQ.split(' ');
-    var detectedPredicateRegex = null;
+    var words = question.split(' ');
 
     for (var i = 0; i < words.length; i++) {
-        var endingIdx = getEnding(words[i]);
-        if (endingIdx >= 0 && typeof endings !== 'undefined') {
-            var cutWord = words[i].substring(0, words[i].length - endings[endingIdx][0].length) + endings[endingIdx][1];
-            if (cutWord.length >= 3) {
-                detectedPredicateRegex = new RegExp(cutWord.substring(0, 4), 'i');
-                break; 
+        var ending = getEnding(words[i]);
+
+        if (ending >= 0) {
+            words[i] =
+                words[i].substring(0, words[i].length - endings[ending][0].length) +
+                endings[ending][1];
+
+            var predicate = new RegExp(words[i], 'i');
+            var subjectString = words.slice(i + 1).join('.*');
+
+            if (subjectString.length > 2) {
+                var subject = new RegExp('.*' + subjectString + '.*', 'i');
+
+                for (var j = 0; j < knowledgeBase.length; j++) {
+                    if (
+                        predicate.test(knowledgeBase[j][1]) &&
+                        (subject.test(knowledgeBase[j][0]) ||
+                            subject.test(knowledgeBase[j][2]))
+                    ) {
+                        answers.push(getAnswerText(knowledgeBase[j]));
+                        result = true;
+                    }
+                }
+
+                if (result === false) {
+                    for (var k = 0; k < knowledgeBase.length; k++) {
+                        if (
+                            subject.test(knowledgeBase[k][0]) ||
+                            subject.test(knowledgeBase[k][2])
+                        ) {
+                            answers.push(getAnswerText(knowledgeBase[k]));
+                            result = true;
+                        }
+                    }
+                }
             }
         }
     }
 
-    var keywords = getMeaningfulWords(cleanQ);
-
-    // Фильтруем ключевые слова от самого корня глагола, чтобы они не пересекались
-    if (detectedPredicateRegex) {
-        keywords = keywords.filter(function(kw) {
-            return !detectedPredicateRegex.test(kw);
-        });
-    }
-
-    // === ПЕРВЫЙ ПРОХОД: Строгий семантический поиск (и предикат, и ключевое слово совпали) ===
-    for (var j = 0; j < base.length; j++) {
-        var isPredicateMatch = false;
-        
-        if (detectedPredicateRegex && detectedPredicateRegex.test(base[j][1])) {
-            isPredicateMatch = true;
-        } else {
-            var predWords = getMeaningfulWords(base[j][1]);
-            isPredicateMatch = predWords.some(function(pw) {
-                return cleanQ.indexOf(pw.substring(0, 4)) !== -1;
-            });
-        }
-
-        var isSubjectMatch = keywords.some(function(kw) {
-            var root = kw.substring(0, 4);
-            return base[j][0].toLowerCase().indexOf(root) !== -1 || 
-                   base[j][2].toLowerCase().indexOf(root) !== -1;
-        });
-
-        if (isSubjectMatch && isPredicateMatch) {
-            answers.push(getAnswerText(base[j]));
-        }
-    }
-
-    if (answers.length === 0) {
-        for (var k = 0; k < base.length; k++) {
-            
-            if (cleanQ.indexOf('состоит') !== -1 && base[k][1].toLowerCase().indexOf('состоит') === -1) {
-                continue;
-            }
-            if ((cleanQ.indexOf('кто') !== -1 || cleanQ.indexOf('автор') !== -1) && 
-                (base[k][1].toLowerCase().indexOf('является') === -1 && base[k][1].toLowerCase().indexOf('создан') === -1 && base[k][1].toLowerCase().indexOf('разработан') === -1)) {
-                continue;
-            }
-            if (cleanQ.indexOf('где') !== -1 && base[k][1].toLowerCase().indexOf('используется') === -1) {
-                continue;
-            }
-            if (cleanQ.indexOf('как работает') !== -1 && base[k][1].toLowerCase().indexOf('работает') === -1) {
-                continue;
-            }
-
-            var isSubjectMatch = keywords.some(function(kw) {
-                var root = kw.substring(0, 4);
-                return base[k][0].toLowerCase().indexOf(root) !== -1 || 
-                       base[k][2].toLowerCase().indexOf(root) !== -1;
-            });
-
-            if (isSubjectMatch) {
-                answers.push(getAnswerText(base[k]));
+    if (!result) {
+        for (var m = 0; m < knowledgeBase.length; m++) {
+            if (
+                questionContainsSubject(question, knowledgeBase[m][0]) &&
+                questionContainsPredicate(question, knowledgeBase[m][1])
+            ) {
+                answers.push(getAnswerText(knowledgeBase[m]));
+                result = true;
             }
         }
     }
 
-    if (answers.length === 0) {
-        return 'Ответ не найден. Попробуйте уточнить вопрос (например, использовать слова "состоит из", "используется для").';
+    if (!result) {
+        return 'Ответ не найден.';
     }
 
     answers = answers.filter(function(item, pos) {
