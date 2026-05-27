@@ -40,7 +40,7 @@
     white-space: nowrap;
     transition: background 0.2s ease;
 }
-li 
+.answer-list
 {
     list-style-type: none;
     font-size: 18px;

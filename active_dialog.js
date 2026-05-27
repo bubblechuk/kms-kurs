@@ -14,6 +14,25 @@ var endings = [
     ["ит", "ит"],
     ["ят", "ят"]
 ];
+function getAssetPath(assetPath) {
+  var cleanPath = String(assetPath).replace(/^\/+/, '')
+
+  if (typeof window === 'undefined' || !window.location) {
+    return cleanPath
+  }
+
+  var pathname = window.location.pathname
+  var basePath = '/'
+  var pagesIndex = pathname.indexOf('/pages/')
+
+  if (pagesIndex >= 0) {
+    basePath = pathname.substring(0, pagesIndex + 1)
+  } else {
+    basePath = pathname.substring(0, pathname.lastIndexOf('/') + 1)
+  }
+
+  return window.location.origin + basePath + cleanPath
+}
 
 var knowledge = [
     ['Гидравлитический дровокол «Горыныч»', 'является', 'механизированной установкой для точной, быстрой и повторяемой раскалывания древесины различных пород.'],
@@ -114,26 +133,43 @@ var knowledge = [
     ['Автором симулятора', 'является', 'Maksym Kovalchuk'],
     ['Разработчиком симулятора', 'является', 'Maksym Kovalchuk'],
     ['Симулятор', 'разразработан', 'Maksym Kovalchuk'],
-    ['Проект', 'создан', 'Maksym Kovalchuk']
+    ['Проект', 'создан', 'Maksym Kovalchuk'],
+    ['Дровокол', 'выглядит', getAssetPath('./drovokol.jpg')],
+    ['Дровокол', 'работает', getAssetPath('./project.mp4')]
 ];
 
 
 function dialog_window() {
-    document.body.innerHTML += "<div id='dialog' class='dialog'>"
+    document.body.insertAdjacentHTML('beforeend', 
+        "<div id='dialog' class='dialog'>"
         + "<div class='label' onclick='openDialog()'>Нажми, чтобы спросить!</div>"
         + "<div class='header'>История диалога с БЗ:</div>"
         + "<div class='history' id='history'></div>"
         + "<div class='question'><input id='Qdialog' placeholder='Введите ваш вопрос...'/> <br>"
         + "<button onclick='ask(\"Qdialog\")'>Спросить</button></div>"
-        + "</div>";
+        + "</div>"
+    );
 
+    // Подключение к Yandex SpeechKit для голосового ввода
+    // Подключение к Yandex SpeechKit для голосового ввода
     if (window.ya && window.ya.speechkit) {
+        // Защита от ошибки: если объекта settings нет, создаем его вручную
+        if (!window.ya.speechkit.settings) {
+            window.ya.speechkit.settings = {};
+        }
+        
         window.ya.speechkit.settings.apikey = '5c6d6536-b453-4589-9bc7-f16c7a795106';
-        var textline = new ya.speechkit.Textline('Qdialog', { 
-            onInputFinished: function(text) {
-                document.getElementById('Qdialog').value = text; 
-            } 
-        });
+        
+        // Дополнительно обернем инициализацию текстовой строки в try-catch
+        try {
+            var textline = new ya.speechkit.Textline('Qdialog', { 
+                onInputFinished: function(text) {
+                    document.getElementById('Qdialog').value = text; 
+                }
+            });
+        } catch(e) {
+            console.warn("Не удалось инициализировать Textline (возможно, микрофон заблокирован или скрипт SpeechKit устарел):", e);
+        }
     }
 }
 function getEnding(word) {

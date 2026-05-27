@@ -112,7 +112,7 @@ ul{
 </style>
 </head>
 
-<body onLoad="dialog_window()">
+<body>
 
 <div class="navbar">
 <div class="page-title">Дровокол «Горыныч»</div>
@@ -128,6 +128,13 @@ ul{
 <div class="content">
 
 <h2>Принцип работы дровокола «Горыныч»</h2>
+<h3 style="text-align: center">Рабочий цикл</h3>
+<div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+        <video src="project.mp4"
+          style="width: 70%; height: auto; display: block; box-sizing: border-box;" controls>
+        </video>
+
+      </div>
 
 <p>Дровокол «Горыныч» работает на основе гидравлического принципа передачи усилия. В отличие от ручной рубки колуном, где сила создаётся человеком, в данном устройстве основную работу выполняет гидравлическая система. Это позволяет создавать большое давление и раскалывать даже плотную и крупную древесину с минимальными физическими усилиями со стороны оператора.</p>
 
@@ -163,7 +170,9 @@ ul{
 </div>
 <script>
 window.addEventListener("DOMContentLoaded", () => {
-
+if (typeof dialog_window === "function") {
+        dialog_window();
+    }
 const audio = new Audio();
 
 const detailData = {
