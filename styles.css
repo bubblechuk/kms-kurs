@@ -1,11 +1,7 @@
-/* ==========================================
-   ОБЩИЙ КОНТЕЙНЕР ДИАЛОГОВОГО ОКНА
-   ========================================== */
 .dialog {
     position: fixed;
     top: 50%;
-    /* Изменяем left на right, чтобы окно гарантированно сидело у правого края */
-    right: -450px; /* Изначально полностью спрятано (равно ширине окна) */
+    right: -450px; 
     transform: translateY(-50%);
     width: 450px;
     height: 85vh;
@@ -19,12 +15,8 @@
     flex-direction: column;
     padding: 20px;
 }
-/* ==========================================
-   ФИКСИРОВАННЫЙ ЯРЛЫЧОК-КНОПКА СБОКУ (Слева от окна)
-   ========================================== */
 .dialog .label {
     position: absolute;
-    /* Разворачиваем его на левый бок самого окна, чтобы он всегда был виден */
     left: -138px; 
     top: 50%;
     transform: translateY(-50%) rotate(270deg);
@@ -46,12 +38,9 @@
     font-size: 18px;
 }
 .dialog .label:hover {
-    background: #222; /* Светится при наведении */
+    background: #222; 
 }
 
-/* ==========================================
-   ЗАГЛУШКА-ЗАГОЛОВОК
-   ========================================== */
 .dialog .header {
     color: #ffffff;
     font-size: 18px;
@@ -62,17 +51,14 @@
     border-bottom: 1px solid #333;
 }
 
-/* ==========================================
-   ОКНО ИСТОРИИ СООБЩЕНИЙ (ЧАТ)
-   ========================================== */
 .dialog .history {
-    flex-grow: 1; /* Занимает всё доступное пространство по высоте */
-    overflow-y: auto; /* Умный скролл */
+    flex-grow: 1;
+    overflow-y: auto;
     padding-right: 5px;
     margin-bottom: 15px;
     display: flex;
     flex-direction: column;
-    gap: 12px; /* Расстояние между сообщениями */
+    gap: 12px; 
 }
 
 /* Кастомизация полосы прокрутки (Scrollbar) */
@@ -87,11 +73,6 @@
     border-radius: 10px;
 }
 
-/* ==========================================
-   СТИЛИ СООБЩЕНИЙ (ВОПРОС И ОТВЕТ)
-   ========================================== */
-
-/* Общий шаблон контейнеров в чате */
 .dialog .history .question,
 .dialog .history .answer {
     max-width: 85%;
@@ -103,23 +84,20 @@
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-/* Вопрос пользователя (выравнивается вправо) */
 .dialog .history .question {
     background: #2a2a35;
     color: #e2e2e9;
-    align-self: flex-end; /* Прижимаем вправо */
-    border-bottom-right-radius: 2px; /* Стильный уголок сообщения */
+    align-self: flex-end; 
+    border-bottom-right-radius: 2px; 
 }
 
-/* Ответ базы знаний (выравнивается влево) */
 .dialog .history .answer {
     background: #222;
     color: #ffffff;
-    align-self: flex-start; /* Прижимаем влево */
-    border-bottom-left-radius: 2px; /* Стильный уголок */
+    align-self: flex-start; 
+    border-bottom-left-radius: 2px; 
 }
 
-/* Стилизация списков триад внутри ответов */
 .dialog .history .answer ul.answer-list {
     margin: 0;
     padding-left: 15px !important;
@@ -132,9 +110,6 @@
     margin-bottom: 0;
 }
 
-/* ==========================================
-   БЛОК ВВОДА (ИНПУТ И КНОПКА)
-   ========================================== */
 .dialog .question {
     display: flex;
     flex-direction: column;
@@ -145,7 +120,6 @@
     width: 100%;
 }
 
-/* Текстовое поле ввода */
 .dialog input[id="Qdialog"] {
     width: 100% !important;
     box-sizing: border-box;
@@ -160,14 +134,13 @@
 }
 
 .dialog input[id="Qdialog"]:focus {
-    border-color: #4f9d69; /* Зеленая рамка при фокусе */
+    border-color: #4f9d69; 
 }
 
 .dialog input[id="Qdialog"]::placeholder {
     color: #626270;
 }
 
-/* Кнопка «Спросить» */
 .dialog button {
     width: 100% !important;
     box-sizing: border-box;
@@ -191,9 +164,6 @@
     transform: scale(0.98); /* Визуальный эффект нажатия */
 }
 
-/* ==========================================
-   МУЛЬТИМЕДИА В ОТВЕТАХ
-   ========================================== */
 .dialog .history .answer img,
 .dialog .history .answer video {
     margin-top: 8px;

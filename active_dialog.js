@@ -150,17 +150,13 @@ function dialog_window() {
         + "</div>"
     );
 
-    // Подключение к Yandex SpeechKit для голосового ввода
-    // Подключение к Yandex SpeechKit для голосового ввода
     if (window.ya && window.ya.speechkit) {
-        // Защита от ошибки: если объекта settings нет, создаем его вручную
         if (!window.ya.speechkit.settings) {
             window.ya.speechkit.settings = {};
         }
         
         window.ya.speechkit.settings.apikey = '5c6d6536-b453-4589-9bc7-f16c7a795106';
         
-        // Дополнительно обернем инициализацию текстовой строки в try-catch
         try {
             var textline = new ya.speechkit.Textline('Qdialog', { 
                 onInputFinished: function(text) {
